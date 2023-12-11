@@ -15,8 +15,6 @@ using System.Xml.Linq;
 namespace takattowo_launcher
 {
 
-
-
     public partial class MainForm : Form
     {
         // The URL to the binary
@@ -32,8 +30,16 @@ namespace takattowo_launcher
         public MainForm()
         {
             InitializeComponent();
-
+            ServiceRegistration();
         }
+
+        void ServiceRegistration() //handle network security error on windows7 or lower
+        {
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+        }
+
 
         private async Task DownloadAndRunAsync(string url)
         {
@@ -64,7 +70,8 @@ namespace takattowo_launcher
             }
             catch (Exception ex)
             {
-                lbInfo.Text = $"Error: {ex.Message}";
+                MessageBox.Show(ex.ToString());
+
             }
         }
 
